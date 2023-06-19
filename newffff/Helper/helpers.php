@@ -1,5 +1,6 @@
 <?php
-define('BASE_URL', 'http://localhost:8010/account/');
+session_start();
+define('BASE_URL', 'http://localhost:8010/account/newffff');
 function redirect($path)
 {
     header("Location:" . trim(BASE_URL, '/ ') . "/" . trim($path, '/ '));

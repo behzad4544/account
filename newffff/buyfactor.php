@@ -3,12 +3,14 @@ require "./Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./Helper/helpers.php";
 global $db;
 if (isset($_POST['submit'])) {
+    date_default_timezone_set('Iran');
+    $realTimestamp = substr($_POST['buy_date'], 0, 10);
     $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['buy_off'];
     $sql = 'INSERT INTO `buyfactor` SET buy_date=?,cust_id=?,product_id=?,warehouse_id=?,product_qty=?,factor_fi=?,buy_off=?,buy_sum=?,factor_explanation=?,user_editfactor=?';
     $stmt = $db->prepare($sql);
     $user = '1';
-    // dd($_POST);
-    $stmt->execute([(int)$_POST['buy_date'], (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], (int)$user]);
+    $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], (int)$user]);
+    $id = $db->lastInsertId();
 }
 ?>
 <!DOCTYPE html>
@@ -20,14 +22,14 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Factor</title>
     <!-- swiper css link -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <link rel="stylesheet" href="./CSS/swiper-bundle.min.css" />
+    <link rel='stylesheet' href='./CSS/sweet-alert.css'>
     <link rel="stylesheet" href="./CSS/bootstrap.min.css" />
     <link href="Public/jalalidatepicker/persian-datepicker.min.css" rel="stylesheet" type="text/css">
 
 
     <!-- font awesome cdn link-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./CSS/all.min.css">
 
     <!-- custom css file link -->
     <link rel="stylesheet" href="./CSS/style3.css">
@@ -43,7 +45,6 @@ if (isset($_POST['submit'])) {
 
     <section class="booking">
         <h1 class="heading-title"></h1>
-
         <form action="" method="POST" class="book-form">
             <div class="flex">
                 <div class="inputBox">
@@ -108,35 +109,45 @@ if (isset($_POST['submit'])) {
 
             <input type="submit" value="ثبت فاکتور" class="btn" name="submit" id="submit">
 
+
+            <?php
+            if (isset($_POST['submit']) && $stmt->rowCount() == 1) {
+                echo "
+        <script>
+        setTimeout(function() {
+            swal('فاکتور شماره ۱۰ ثبت شد', 'حواله شماره ۲ ثبت شد', 'success')
+        }, 1);
+        window.setTimeout(function() {
+            window.location.replace('../buyfactorpre.php?id={$id}');
+        }, 8000);
+        </script>
+        ";
+            }
+            ?>
         </form>
     </section>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="./JS/jquery-3.3.1.slim.min.js"></script>
     <script src="./JS/bootstrap.min.js"></script>
     <script src="./Public/jalalidatepicker/persian-date.min.js"></script>
     <script src="./Public/jalalidatepicker/persian-datepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script src='./JS/sweet-alert.min.js'></script>
     <script>
         $(document).ready(function() {
             $("#date_view").persianDatepicker({
-                    format: 'YYYY-MM-DD',
-                    toolbax: {
-                        calendarSwitch: {
-                            enabled: true
-                        }
-                    },
-                    observer: true,
-                    altField: '#buy_date'
-                }),
-                $("#submit").on('click', function() {
-                    swal.fire(
-                        "Are you sure?",
-                        "You will not be able to recover this imaginary file!",
-                        "warning"
-                    )
-                })
+                format: 'YYYY-MM-DD',
+                toolbax: {
+                    calendarSwitch: {
+                        enabled: true
+                    }
+                },
+                observer: true,
+                altField: '#buy_date'
+            })
         });
     </script>
 
 
 </body>
+
+</html>

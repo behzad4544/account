@@ -23,15 +23,16 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>purchaseorder</title>
+    <title>Sell Factor</title>
     <!-- swiper css link -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="./CSS/swiper-bundle.min.css" />
+    <link rel='stylesheet' href='./CSS/sweet-alert.css'>
     <link rel="stylesheet" href="./CSS/bootstrap.min.css" />
     <link href="Public/jalalidatepicker/persian-datepicker.min.css" rel="stylesheet" type="text/css">
 
 
     <!-- font awesome cdn link-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./CSS/all.min.css">
 
     <!-- custom css file link -->
     <link rel="stylesheet" href="./CSS/style3.css">
@@ -104,10 +105,11 @@ if (isset($_POST['submit'])) {
         </form>
     </section>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="./JS/jquery-3.3.1.slim.min.js"></script>
     <script src="./JS/bootstrap.min.js"></script>
     <script src="./Public/jalalidatepicker/persian-date.min.js"></script>
     <script src="./Public/jalalidatepicker/persian-datepicker.min.js"></script>
+    <script src='./JS/sweet-alert.min.js'></script>
     <script>
         $(document).ready(function() {
             $("#date_view").persianDatepicker({

@@ -1,32 +1,27 @@
-
-
- 
- 
-
- /*:root{
+/*:root{
     --main-color:#8e44ad;
  } */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /*background: var(--main-color)*/
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*background: var(--main-color)*/
 }
 
 .login {
-    width: 360px;
-    height: min-content;
-    padding: 20px;
-    border-radius: 12px;
-    background: #ffffff;
+  width: 360px;
+  height: min-content;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
 }
 
 .login h1 {
@@ -35,16 +30,27 @@ body {
 }
 
 .login form {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .login form .form-group {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .login form input[type="submit"] {
-    font-size: 20px;
-    margin-top: 15px;
+  font-size: 20px;
+  margin-top: 15px;
 }
 
+.invoice-container {
+  margin-left: 0;
+  padding: 85px !important;
+  max-width: 850px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
 
+.text-1 {
+  font-size: 12px;
+}
