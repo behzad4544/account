@@ -4,16 +4,31 @@ require "./Helper/helpers.php";
 global $db;
 if (isset($_POST['submit'])) {
     date_default_timezone_set('Iran');
-    $realTimestamp = substr($_POST['buy_date'], 0, 10);
+    $realTimestamp = substr($_POST['sell_date'], 0, 10);
     $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['sell_off'];
     $sql = 'INSERT INTO `sellfactors` SET sell_date=?,cust_id=?,product_id=?,product_qty=?,factor_fi=?,sell_off=?,sell_sum=?,factor_explanation=?,user_editfactor=?';
     $stmt = $db->prepare($sql);
     $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
-    if ($stmt) {
-        echo "ثبت شد";
-    } else {
-        echo "ثبت نشد";
-    }
+    $id = $db->lastInsertId();
+    $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([(int)$_POST['cust_id'], -(int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+    $id1 = $db->lastInsertId();
+    $sql = 'SELECT * from personaccount where cust_name=?';
+    $sell1 = 'فروش';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$sell1]);
+    $sell2 = $stmt->fetch();
+    $sell = $sell2->cust_id;
+    $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([(int)$sell, (int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+    $id2 = $db->lastInsertId();
+    $sql = 'SELECT * FROM personaccount where cust_id=?';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$_POST['cust_id']]);
+    $customer = $stmt->fetch();
+    $cus = $customer->cust_name;
 }
 ?>
 <!DOCTYPE html>
@@ -101,7 +116,20 @@ if (isset($_POST['submit'])) {
             </div>
 
             <input type="submit" value="ثبت فاکتور" class="btn" name="submit">
-
+            <?php
+            if (isset($_POST['submit']) && $stmt->rowCount() == 1) {
+                echo "
+        <script>
+        setTimeout(function() {
+            swal('فاکتور فروش شماره {$id} ثبت شد ', 'حواله شماره {$id1} برای طرف حساب {$cus} و همچنین حواله شماره {$id2} برای حساب فروش ثبت شد', 'success')
+        }, 1);
+        window.setTimeout(function() {
+            window.location.replace('../sellfactorpre.php?id={$id}');
+        }, 8000);
+        </script>
+        ";
+            }
+            ?>
         </form>
     </section>
 
