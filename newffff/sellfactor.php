@@ -3,12 +3,12 @@ require "./Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./Helper/helpers.php";
 global $db;
 if (isset($_POST['submit'])) {
+    date_default_timezone_set('Iran');
+    $realTimestamp = substr($_POST['buy_date'], 0, 10);
     $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['sell_off'];
     $sql = 'INSERT INTO `sellfactors` SET sell_date=?,cust_id=?,product_id=?,product_qty=?,factor_fi=?,sell_off=?,sell_sum=?,factor_explanation=?,user_editfactor=?';
     $stmt = $db->prepare($sql);
-    $user = '1';
-    // dd($_POST);
-    $stmt->execute([(int)$_POST['sell_date'], (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], (int)$user]);
+    $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
     if ($stmt) {
         echo "ثبت شد";
     } else {

@@ -8,9 +8,27 @@ if (isset($_POST['submit'])) {
     $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['buy_off'];
     $sql = 'INSERT INTO `buyfactor` SET buy_date=?,cust_id=?,product_id=?,warehouse_id=?,product_qty=?,factor_fi=?,buy_off=?,buy_sum=?,factor_explanation=?,user_editfactor=?';
     $stmt = $db->prepare($sql);
-    $user = '1';
-    $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], (int)$user]);
+    $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
     $id = $db->lastInsertId();
+    $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([(int)$_POST['cust_id'], (int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+    $id1 = $db->lastInsertId();
+    $sql = 'SELECT * from personaccount where cust_name=?';
+    $buy1 = 'خرید';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$buy1]);
+    $buy2 = $stmt->fetch();
+    $buy = $buy2->cust_id;
+    $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([(int)$buy, -(int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+    $id2 = $db->lastInsertId();
+    $sql = 'SELECT * FROM personaccount where cust_id=?';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$_POST['cust_id']]);
+    $supplier = $stmt->fetch();
+    $supp = $supplier->cust_name;
 }
 ?>
 <!DOCTYPE html>
@@ -115,7 +133,7 @@ if (isset($_POST['submit'])) {
                 echo "
         <script>
         setTimeout(function() {
-            swal('فاکتور شماره ۱۰ ثبت شد', 'حواله شماره ۲ ثبت شد', 'success')
+            swal('فاکتور خرید شماره {$id} ثبت شد ', 'حواله شماره {$id1} برای طرف حساب {$supp} و همچنین حواله شماره {$id2} برای حساب خرید ثبت شد', 'success')
         }, 1);
         window.setTimeout(function() {
             window.location.replace('../buyfactorpre.php?id={$id}');
