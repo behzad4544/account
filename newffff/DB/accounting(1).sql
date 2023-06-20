@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 18, 2023 at 12:26 PM
+-- Generation Time: Jun 20, 2023 at 11:30 AM
 -- Server version: 8.0.32-0ubuntu0.20.04.2
 -- PHP Version: 8.2.5
 
@@ -45,7 +45,7 @@ CREATE TABLE `accounts` (
 
 CREATE TABLE `buyfactor` (
   `buyfactor_id` int UNSIGNED NOT NULL,
-  `buy_date` bigint NOT NULL,
+  `buy_date` varchar(256) COLLATE utf8mb4_persian_ci NOT NULL,
   `cust_id` int UNSIGNED NOT NULL,
   `product_id` int UNSIGNED NOT NULL,
   `warehouse_id` int UNSIGNED NOT NULL,
@@ -59,6 +59,13 @@ CREATE TABLE `buyfactor` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `user_editfactor` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;
+
+--
+-- Dumping data for table `buyfactor`
+--
+
+INSERT INTO `buyfactor` (`buyfactor_id`, `buy_date`, `cust_id`, `product_id`, `warehouse_id`, `product_qty`, `factor_fi`, `buy_off`, `buy_sum`, `factor_explanation`, `factor_done`, `created_at`, `updated_at`, `user_editfactor`) VALUES
+(22, '1687345941', 1, 1, 1, 20, 100, 10, 1990, 'خرید خودکار', '1', '2023-06-20 11:12:45', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -78,7 +85,8 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`category_id`, `category_name`, `created_at`, `updated_at`) VALUES
-(1, 'خودکار', '2023-06-18 07:14:30', NULL);
+(1, 'خودکار', '2023-06-18 07:14:30', NULL),
+(2, 'تکنولوژی', '2023-06-20 08:52:28', NULL);
 
 -- --------------------------------------------------------
 
@@ -90,11 +98,23 @@ CREATE TABLE `credits` (
   `credit_id` int UNSIGNED NOT NULL,
   `personaccount_id` int UNSIGNED NOT NULL,
   `credit` bigint NOT NULL,
-  `transfer_id` int UNSIGNED NOT NULL,
-  `created_at` timestamp NOT NULL,
+  `transfer_id` int UNSIGNED DEFAULT NULL,
+  `buyfactor_id` int UNSIGNED DEFAULT NULL,
+  `sellfactor_id` int UNSIGNED DEFAULT NULL,
+  `created_at` varchar(256) COLLATE utf8mb4_persian_ci NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `edit_user` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;
+
+--
+-- Dumping data for table `credits`
+--
+
+INSERT INTO `credits` (`credit_id`, `personaccount_id`, `credit`, `transfer_id`, `buyfactor_id`, `sellfactor_id`, `created_at`, `updated_at`, `edit_user`) VALUES
+(1, 1, 1990, NULL, 22, NULL, '1687345941', NULL, 1),
+(2, 2, -1990, NULL, 22, NULL, '1687345941', NULL, 1),
+(3, 1, -350, NULL, NULL, 12, '1687259711', NULL, 1),
+(4, 3, 350, NULL, NULL, 12, '1687259711', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -105,10 +125,38 @@ CREATE TABLE `credits` (
 CREATE TABLE `menus` (
   `menu_id` int UNSIGNED NOT NULL,
   `menu_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
+  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
+  `ordermenu` int UNSIGNED NOT NULL,
   `permition_id` int UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;
+
+--
+-- Dumping data for table `menus`
+--
+
+INSERT INTO `menus` (`menu_id`, `menu_name`, `url`, `ordermenu`, `permition_id`, `created_at`, `updated_at`) VALUES
+(1, 'فاکتور خرید', '', 1, 1, '2023-06-19 06:36:04', NULL),
+(2, 'فاکتور خرید', '', 1, 2, '2023-06-19 06:36:04', NULL),
+(3, 'فاکتور خرید', '', 1, 3, '2023-06-19 06:36:04', NULL),
+(4, 'فاکتور فروش', '', 2, 1, '2023-06-19 06:36:31', NULL),
+(5, 'فاکتور فروش', '', 2, 2, '2023-06-19 06:36:31', NULL),
+(6, 'فاکتور فروش', '', 2, 3, '2023-06-19 06:36:31', NULL),
+(7, 'تعریف طرف حساب و حساب ها', '', 3, 1, '2023-06-19 06:38:08', NULL),
+(8, 'تعریف طرف حساب و حساب ها', '', 3, 2, '2023-06-19 06:38:08', NULL),
+(9, 'تعریف طرف حساب و حساب ها', '', 3, 3, '2023-06-19 06:38:08', NULL),
+(10, 'تعریف کالای جدید', '', 4, 1, '2023-06-19 06:38:34', NULL),
+(11, 'تعریف کالای جدید', '', 4, 2, '2023-06-19 06:38:34', NULL),
+(12, 'تعریف کالای جدید', '', 4, 3, '2023-06-19 06:38:34', NULL),
+(13, 'کاردکس اشخاص', '', 5, 1, '2023-06-19 06:39:07', NULL),
+(14, 'کاردکس اشخاص', '', 5, 2, '2023-06-19 06:39:07', NULL),
+(15, 'کاردکس کالا', '', 6, 1, '2023-06-19 06:39:26', NULL),
+(16, 'کاردکس کالا', '', 6, 2, '2023-06-19 06:39:26', NULL),
+(17, 'تعریف کاربر جدید و لیست کاربران', '', 7, 1, '2023-06-19 06:39:46', NULL),
+(18, 'اصلاح فاکتورها', '', 8, 1, '2023-06-19 06:41:10', NULL),
+(19, 'ثبت حواله', '', 9, 1, '2023-06-19 06:41:10', NULL),
+(20, 'ثبت حواله', '', 9, 2, '2023-06-19 06:41:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -128,7 +176,9 @@ CREATE TABLE `permitions` (
 --
 
 INSERT INTO `permitions` (`permition_id`, `permition_name`, `created_at`, `updated_at`) VALUES
-(1, 'مدیر', '2023-06-18 07:14:46', NULL);
+(1, 'مدیر', '2023-06-18 07:14:46', NULL),
+(2, 'حسابدار', '2023-06-19 06:33:22', NULL),
+(3, 'فاکتور زن', '2023-06-19 06:33:32', NULL);
 
 -- --------------------------------------------------------
 
@@ -153,7 +203,9 @@ CREATE TABLE `personaccount` (
 --
 
 INSERT INTO `personaccount` (`cust_id`, `account_type`, `cust_name`, `cust_codemeli`, `cust_address`, `cust_mobile`, `cust_active`, `created_at`, `updated_at`) VALUES
-(1, '1', 'بهزاد', 123456, 'نارمک', 123, '1', '2023-06-18 07:15:30', NULL);
+(1, '1', 'بهزاد', 123456, 'نارمک', 123, '1', '2023-06-18 07:15:30', NULL),
+(2, '2', 'خرید', NULL, NULL, NULL, '1', '2023-06-20 04:01:50', NULL),
+(3, '2', 'فروش', NULL, NULL, NULL, '1', '2023-06-20 04:01:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -176,7 +228,9 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `product_name`, `product_serial`, `category_id`, `unit_id`, `created_at`, `updated_at`) VALUES
-(1, 'خودکار بیک', 123, 1, 1, '2023-06-18 07:16:47', NULL);
+(1, 'خودکار بیک', 123, 1, 1, '2023-06-18 07:16:47', NULL),
+(2, 'لپتاپ', 100, 2, 1, '2023-06-20 08:54:25', NULL),
+(3, 'موبایل', 784, 2, 1, '2023-06-20 08:54:25', NULL);
 
 -- --------------------------------------------------------
 
@@ -205,10 +259,29 @@ CREATE TABLE `sellfactors` (
 --
 
 INSERT INTO `sellfactors` (`sellfactor_id`, `sell_date`, `cust_id`, `product_id`, `product_qty`, `factor_fi`, `sell_off`, `sell_sum`, `factor_explanation`, `factor_done`, `created_at`, `updated_at`, `user_editfactor`) VALUES
-(1, 0, 1, 1, 4, 800, 10, 3190, 'فروش', '1', '2023-06-18 10:53:15', NULL, 1),
-(3, 0, 1, 1, 4, 800, 10, 3190, 'فروش', '1', '2023-06-18 10:55:20', NULL, 1),
-(4, 1687085789000, 1, 1, 20, 5, 14, 86, 'nbhkjhdabsna', '1', '2023-06-18 10:56:30', NULL, 1),
-(5, 1687085789000, 1, 1, 20, 5, 14, 86, 'nbhkjhdabsna', '1', '2023-06-18 11:11:49', NULL, 1);
+(12, 1687259711, 1, 1, 18, 20, 10, 350, '', '1', '2023-06-20 11:15:29', NULL, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stocks`
+--
+
+CREATE TABLE `stocks` (
+  `stock_id` int UNSIGNED NOT NULL,
+  `stock_productid` int UNSIGNED NOT NULL,
+  `stock_wearhouseid` int UNSIGNED NOT NULL,
+  `stock` bigint NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;
+
+--
+-- Dumping data for table `stocks`
+--
+
+INSERT INTO `stocks` (`stock_id`, `stock_productid`, `stock_wearhouseid`, `stock`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 2, '2023-06-20 11:12:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -246,7 +319,9 @@ CREATE TABLE `units` (
 --
 
 INSERT INTO `units` (`unit_id`, `unit_name`, `created_at`, `updated_at`) VALUES
-(1, 'کیلو', '2023-06-18 07:15:51', NULL);
+(1, 'عدد', '2023-06-18 07:15:51', NULL),
+(2, 'کیلو', '2023-06-20 08:53:42', NULL),
+(3, 'لیتر', '2023-06-20 08:53:42', NULL);
 
 -- --------------------------------------------------------
 
@@ -259,7 +334,7 @@ CREATE TABLE `users` (
   `user_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
   `user_firstName` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
   `user_email` varchar(256) COLLATE utf8mb4_persian_ci NOT NULL,
-  `user_password` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
+  `user_password` text CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
   `permition_id` int UNSIGNED NOT NULL,
   `user_active` enum('1','2') COLLATE utf8mb4_persian_ci NOT NULL DEFAULT '2',
   `user_token` varchar(256) COLLATE utf8mb4_persian_ci DEFAULT NULL,
@@ -272,7 +347,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_name`, `user_firstName`, `user_email`, `user_password`, `permition_id`, `user_active`, `user_token`, `created_at`, `updated_at`) VALUES
-(1, 'behzad', 'behzad', 'behzad.kermanii@gmail.com', '123456', 1, '2', NULL, '2023-06-18 07:16:21', NULL);
+(1, 'behzad', 'behzad', 'behzad.kermanii@gmail.com', '$2y$10$RcxAXEPlaL33QQ.y0RKTeeNZwFr8uzasX2tRbSpNQ52SPAWqVLCIK', 1, '2', NULL, '2023-06-18 07:16:21', NULL);
 
 -- --------------------------------------------------------
 
@@ -325,9 +400,12 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `credits`
   ADD PRIMARY KEY (`credit_id`),
-  ADD KEY ` personaccount_id` (`personaccount_id`),
   ADD KEY `edituser` (`edit_user`),
-  ADD KEY `transfers_id` (`transfer_id`);
+  ADD KEY `transfers_id` (`transfer_id`),
+  ADD KEY `cre_id` (`credit_id`) USING BTREE,
+  ADD KEY `buyfactor_id` (`buyfactor_id`),
+  ADD KEY `sellfactor_id` (`sellfactor_id`),
+  ADD KEY `personaccount_id` (`personaccount_id`) USING BTREE;
 
 --
 -- Indexes for table `menus`
@@ -364,6 +442,14 @@ ALTER TABLE `sellfactors`
   ADD KEY `cust_id` (`cust_id`),
   ADD KEY `product_id` (`product_id`),
   ADD KEY `user_id` (`user_editfactor`);
+
+--
+-- Indexes for table `stocks`
+--
+ALTER TABLE `stocks`
+  ADD PRIMARY KEY (`stock_id`),
+  ADD KEY `stock_product` (`stock_productid`),
+  ADD KEY `stock_wear` (`stock_wearhouseid`);
 
 --
 -- Indexes for table `transfer`
@@ -407,49 +493,55 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `buyfactor`
 --
 ALTER TABLE `buyfactor`
-  MODIFY `buyfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `buyfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `category_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `credits`
 --
 ALTER TABLE `credits`
-  MODIFY `credit_id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `credit_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `menu_id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `menu_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `permitions`
 --
 ALTER TABLE `permitions`
-  MODIFY `permition_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `permition_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `personaccount`
 --
 ALTER TABLE `personaccount`
-  MODIFY `cust_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `cust_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `product_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `sellfactors`
 --
 ALTER TABLE `sellfactors`
-  MODIFY `sellfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `sellfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `stocks`
+--
+ALTER TABLE `stocks`
+  MODIFY `stock_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `transfer`
@@ -461,7 +553,7 @@ ALTER TABLE `transfer`
 -- AUTO_INCREMENT for table `units`
 --
 ALTER TABLE `units`
-  MODIFY `unit_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `unit_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -493,7 +585,9 @@ ALTER TABLE `buyfactor`
 --
 ALTER TABLE `credits`
   ADD CONSTRAINT ` personaccount_id` FOREIGN KEY (`personaccount_id`) REFERENCES `personaccount` (`cust_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `buyfactor_id` FOREIGN KEY (`buyfactor_id`) REFERENCES `buyfactor` (`buyfactor_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `edituser` FOREIGN KEY (`edit_user`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sellfactor_id` FOREIGN KEY (`sellfactor_id`) REFERENCES `sellfactors` (`sellfactor_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `transfers_id` FOREIGN KEY (`transfer_id`) REFERENCES `transfer` (`transfersend_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -516,6 +610,13 @@ ALTER TABLE `sellfactors`
   ADD CONSTRAINT `cust_id` FOREIGN KEY (`cust_id`) REFERENCES `personaccount` (`cust_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_id` FOREIGN KEY (`user_editfactor`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `stocks`
+--
+ALTER TABLE `stocks`
+  ADD CONSTRAINT `stock_product` FOREIGN KEY (`stock_productid`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `stock_wear` FOREIGN KEY (`stock_wearhouseid`) REFERENCES `wearhouses` (`wearhouse_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `transfer`
