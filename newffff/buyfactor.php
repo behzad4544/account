@@ -2,6 +2,18 @@
 require "./Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./Helper/helpers.php";
 global $db;
+$sql = "SELECT * FROM personaccount where account_type=?";
+$stmt = $db->prepare($sql);
+$stmt->execute([1]);
+$customers = $stmt->fetchAll();
+$sql = "SELECT * FROM products";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$products = $stmt->fetchAll();
+$sql = "SELECT * FROM wearhouses";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$wearhouses = $stmt->fetchAll();
 if (isset($_POST['submit'])) {
     date_default_timezone_set('Iran');
     $realTimestamp = substr($_POST['buy_date'], 0, 10);
@@ -29,6 +41,27 @@ if (isset($_POST['submit'])) {
     $stmt->execute([$_POST['cust_id']]);
     $supplier = $stmt->fetch();
     $supp = $supplier->cust_name;
+    $sql = "SELECT * from stocks where stock_productid=? and stock_wearhouseid=?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([(int)$_POST['product_id'],(int)$_POST['warehouse_id']]);
+    $res = $stmt->fetchAll();
+    if($res == null) {
+        $sql = 'INSERT INTO stocks SET stock_productid=?,stock_wearhouseid=?,stock=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['product_id'],(int)$_POST['warehouse_id'],(int)$_POST['product_qty']]);
+    } else {
+
+        $sql= "SELECT stock FROM stocks where stock_productid=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['product_id']]);
+        $oldstock= $stmt->fetch();
+        $newstock = (int)$oldstock->stock + (int)$_POST['product_qty'];
+        $sql = "UPDATE stocks SET stock=? where stock_productid=? and stock_wearhouseid=?  " ;
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$newstock,(int)$_POST['product_id'],(int)$_POST['warehouse_id']]);
+
+    }
+
 }
 ?>
 <!DOCTYPE html>
@@ -69,9 +102,10 @@ if (isset($_POST['submit'])) {
                     <span> نام تامین کننده: </span>
                     <select name="cust_id" class="inputBox">
                         <option>لطفا یکی از تامین کنندگان زیر را انتخاب فرمایید</option>
-                        <option value="1" class="inputBox">Behzad</option>
-                        <option value="2" class="inputBox">fatemeh</option>
-                        <option value="3" class="inputBox">ArmanGostar</option>
+                        <?php foreach ($customers as $customer): ?>
+                        <option value="<?= $customer->cust_id ?>" class="inputBox"><?= $customer->cust_name ?>
+                        </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="inputBox">
@@ -79,9 +113,10 @@ if (isset($_POST['submit'])) {
                     <span> نام کالا: </span>
                     <select name="product_id" class="inputBox">
                         <option>لطفا یکی از کالاهای زیر را انتخاب فرمایید</option>
-                        <option value="1" class="inputBox">laptop</option>
-                        <option value="2" class="inputBox">mobile</option>
-                        <option value="3" class="inputBox">tablet</option>
+                        <?php foreach($products as $product): ?>
+                        <option value="<?= $product->product_id ?>" class="inputBox"><?= $product->product_name ?>
+                        </option>
+                        <?php endforeach; ?>
                     </select>
 
                 </div>
@@ -89,9 +124,11 @@ if (isset($_POST['submit'])) {
                     <span>نام انبار: </span>
                     <select name="warehouse_id" class="inputBox">
                         <option>لطفا یکی از انبارهای زیر را انتخاب فرمایید</option>
-                        <option value="1" class="inputBox">Warehouse 1</option>
-                        <option value="2" class="inputBox">Warehouse 2</option>
-                        <option value="3" class="inputBox">Warehouse 3</option>
+                        <?php foreach($wearhouses as $wearhouse): ?>
+                        <option value="<?= $wearhouse->wearhouse_id ?>" class="inputBox">
+                            <?= $wearhouse->wearhouse_name ?>
+                        </option>
+                        <?php endforeach; ?>
                     </select>
 
                 </div>
@@ -141,7 +178,7 @@ if (isset($_POST['submit'])) {
         </script>
         ";
             }
-            ?>
+?>
         </form>
     </section>
 
@@ -151,18 +188,18 @@ if (isset($_POST['submit'])) {
     <script src="./Public/jalalidatepicker/persian-datepicker.min.js"></script>
     <script src='./JS/sweet-alert.min.js'></script>
     <script>
-        $(document).ready(function() {
-            $("#date_view").persianDatepicker({
-                format: 'YYYY-MM-DD',
-                toolbax: {
-                    calendarSwitch: {
-                        enabled: true
-                    }
-                },
-                observer: true,
-                altField: '#buy_date'
-            })
-        });
+    $(document).ready(function() {
+        $("#date_view").persianDatepicker({
+            format: 'YYYY-MM-DD',
+            toolbax: {
+                calendarSwitch: {
+                    enabled: true
+                }
+            },
+            observer: true,
+            altField: '#buy_date'
+        })
+    });
     </script>
 
 

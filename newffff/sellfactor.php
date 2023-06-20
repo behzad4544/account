@@ -2,33 +2,62 @@
 require "./Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./Helper/helpers.php";
 global $db;
+$sql = "SELECT * FROM personaccount where account_type=?";
+$stmt = $db->prepare($sql);
+$stmt->execute([1]);
+$suppliers = $stmt->fetchAll();
+$sql = "SELECT products.product_name,stocks.stock_productid,stocks.stock FROM products,stocks where products.product_id = stocks.stock_productid AND stocks.stock > 0 ";
+$stmt = $db->prepare($sql);
+$stmt->execute();
+$products = $stmt->fetchAll();
 if (isset($_POST['submit'])) {
-    date_default_timezone_set('Iran');
-    $realTimestamp = substr($_POST['sell_date'], 0, 10);
-    $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['sell_off'];
-    $sql = 'INSERT INTO `sellfactors` SET sell_date=?,cust_id=?,product_id=?,product_qty=?,factor_fi=?,sell_off=?,sell_sum=?,factor_explanation=?,user_editfactor=?';
+    $errors = [];
+    $sql= "SELECT stock FROM stocks where stock_productid=? ";
     $stmt = $db->prepare($sql);
-    $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
-    $id = $db->lastInsertId();
-    $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
-    $stmt = $db->prepare($sql);
-    $stmt->execute([(int)$_POST['cust_id'], -(int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
-    $id1 = $db->lastInsertId();
-    $sql = 'SELECT * from personaccount where cust_name=?';
-    $sell1 = 'فروش';
-    $stmt = $db->prepare($sql);
-    $stmt->execute([$sell1]);
-    $sell2 = $stmt->fetch();
-    $sell = $sell2->cust_id;
-    $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
-    $stmt = $db->prepare($sql);
-    $stmt->execute([(int)$sell, (int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
-    $id2 = $db->lastInsertId();
-    $sql = 'SELECT * FROM personaccount where cust_id=?';
-    $stmt = $db->prepare($sql);
-    $stmt->execute([$_POST['cust_id']]);
-    $customer = $stmt->fetch();
-    $cus = $customer->cust_name;
+    $stmt->execute([(int)$_POST['product_id']]);
+    $oldstock= $stmt->fetch();
+    $newstock = (int)$oldstock->stock - (int)$_POST['product_qty'];
+    if($newstock < 0) {
+        $errors[] = "تعداد فروش از تعداد موجودی بیشتر می باشد";
+        $tok = 0;
+    } else {
+        $tok = 1;
+        date_default_timezone_set('Iran');
+        $realTimestamp = substr($_POST['sell_date'], 0, 10);
+        $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['sell_off'];
+        $sql = 'INSERT INTO `sellfactors` SET sell_date=?,cust_id=?,product_id=?,product_qty=?,factor_fi=?,sell_off=?,sell_sum=?,factor_explanation=?,user_editfactor=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
+        $id = $db->lastInsertId();
+        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id'], -(int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+        $id1 = $db->lastInsertId();
+        $sql = 'SELECT * from personaccount where cust_name=?';
+        $sell1 = 'فروش';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$sell1]);
+        $sell2 = $stmt->fetch();
+        $sell = $sell2->cust_id;
+        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$sell, (int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+        $id2 = $db->lastInsertId();
+        $sql = 'SELECT * FROM personaccount where cust_id=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$_POST['cust_id']]);
+        $customer = $stmt->fetch();
+        $cus = $customer->cust_name;
+        $sql= "SELECT stock FROM stocks where stock_productid=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['product_id']]);
+        $oldstock= $stmt->fetch();
+        $newstock = (int)$oldstock->stock - (int)$_POST['product_qty'];
+        $sql = "UPDATE stocks SET stock=? where stock_productid=? " ;
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$newstock,(int)$_POST['product_id']]);
+    }
+
 }
 ?>
 <!DOCTYPE html>
@@ -60,7 +89,13 @@ if (isset($_POST['submit'])) {
     </div>
 
     <!-- purchasing section starts -->
-
+    <section class="bg-light my-0 px-2">
+        <?php if (isset($errors)) : ?>
+        <?php foreach ($errors as $error) : ?>
+        <small class="text-danger"><?= $error . '<br>' ?></small>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </section>
     <section class="booking">
         <h1 class="heading-title"></h1>
 
@@ -70,9 +105,10 @@ if (isset($_POST['submit'])) {
                     <span> نام خریدار: </span>
                     <select name="cust_id" class="inputBox">
                         <option>لطفا یکی از خریداران زیر را انتخاب فرمایید</option>
-                        <option value="1" class="inputBox">Behzad</option>
-                        <option value="2" class="inputBox">fatemeh</option>
-                        <option value="3" class="inputBox">ArmanGostar</option>
+                        <?php foreach ($suppliers as $supplier): ?>
+                        <option value="<?= $supplier->cust_id ?>" class="inputBox"><?= $supplier->cust_name ?>
+                        </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="inputBox">
@@ -80,9 +116,10 @@ if (isset($_POST['submit'])) {
                     <span> نام کالا: </span>
                     <select name="product_id" class="inputBox">
                         <option>لطفا یکی از کالاهای زیر را انتخاب فرمایید</option>
-                        <option value="1" class="inputBox">laptop</option>
-                        <option value="2" class="inputBox">mobile</option>
-                        <option value="3" class="inputBox">tablet</option>
+                        <?php foreach($products as $product): ?>
+                        <option value="<?= $product->stock_productid ?>" class="inputBox">
+                            <?= $product->product_name ?></option>
+                        <?php endforeach; ?>
                     </select>
 
                 </div>
@@ -117,7 +154,7 @@ if (isset($_POST['submit'])) {
 
             <input type="submit" value="ثبت فاکتور" class="btn" name="submit">
             <?php
-            if (isset($_POST['submit']) && $stmt->rowCount() == 1) {
+            if (isset($_POST['submit']) && $stmt->rowCount() == 1 && $tok==1) {
                 echo "
         <script>
         setTimeout(function() {
@@ -129,7 +166,7 @@ if (isset($_POST['submit'])) {
         </script>
         ";
             }
-            ?>
+?>
         </form>
     </section>
 
@@ -139,19 +176,19 @@ if (isset($_POST['submit'])) {
     <script src="./Public/jalalidatepicker/persian-datepicker.min.js"></script>
     <script src='./JS/sweet-alert.min.js'></script>
     <script>
-        $(document).ready(function() {
-            $("#date_view").persianDatepicker({
-                format: 'YYYY-MM-DD',
-                toolbax: {
-                    calendarSwitch: {
-                        enabled: true
-                    }
-                },
-                observer: true,
-                altField: '#sell_date'
+    $(document).ready(function() {
+        $("#date_view").persianDatepicker({
+            format: 'YYYY-MM-DD',
+            toolbax: {
+                calendarSwitch: {
+                    enabled: true
+                }
+            },
+            observer: true,
+            altField: '#sell_date'
 
-            })
-        });
+        })
+    });
     </script>
 
 </body>
