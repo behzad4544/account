@@ -24,9 +24,9 @@ if (isset($_SESSION['permition']) && !(empty($_SESSION['permition'])) && isset($
 <body>
     <table>
         <?php foreach ($menus as $menu) : ?>
-            <tr>
-                <td><a href="<?= $menu->url ?>"><?= $menu->menu_name ?></a></td>
-            </tr>
+        <tr>
+            <td><a href="<?= $menu->url ?>"><?= $menu->menu_name ?></a></td>
+        </tr>
         <?php endforeach; ?>
         <tr>
             <td><a href="./logout.php">خروج از سیستم</a></td>

@@ -3,6 +3,9 @@ require "./newffff/Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./newffff/Helper/helpers.php";
 require "./newffff/Helper/jdf.php";
 global $db;
+if (!(isset($_SESSION['username']))) {
+    header("location:login.php");
+}
 if (isset($_GET['id']) && !(empty($_GET['id']))) {
     $id = $_GET['id'];
     $sql = "SELECT buyfactor.buyfactor_id,buyfactor.buy_date,wearhouses.wearhouse_name,buyfactor.user_editfactor,personaccount.cust_name,personaccount.cust_id,products.product_name,buyfactor.product_qty,buyfactor.factor_fi,buyfactor.buy_off,buyfactor.buy_sum,buyfactor.factor_explanation,users.user_name FROM buyfactor,wearhouses,personaccount,products,users WHERE buyfactor.cust_id = personaccount.cust_id and buyfactor.warehouse_id = wearhouses.wearhouse_id and buyfactor.product_id=products.product_id and buyfactor.user_editfactor = users.user_id and buyfactor.buyfactor_id=?";
@@ -114,7 +117,7 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
                                                                         } else {
                                                                             echo "(بدهکار)";
                                                                         }
-                                                                        ?> <?= $credits->credit ?> </strong></td>
+?> <?= $credits->credit ?> </strong></td>
                                     <td colspan="4" class="text-left"><strong> : مانده <?= $factor->cust_name  ?> تا این
                                             تاریخ
                                         </strong></td>

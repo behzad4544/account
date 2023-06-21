@@ -2,6 +2,9 @@
 require "./Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./Helper/helpers.php";
 global $db;
+if (!(isset($_SESSION['username']))) {
+    header("location:../login.php");
+}
 $sql = "SELECT * FROM personaccount where account_type=?";
 $stmt = $db->prepare($sql);
 $stmt->execute([1]);
@@ -25,9 +28,22 @@ if (isset($_POST['submit'])) {
         date_default_timezone_set('Iran');
         $realTimestamp = substr($_POST['sell_date'], 0, 10);
         $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['sell_off'];
-        $sql = 'INSERT INTO `sellfactors` SET sell_date=?,cust_id=?,product_id=?,product_qty=?,factor_fi=?,sell_off=?,sell_sum=?,factor_explanation=?,user_editfactor=?';
+
+
+        $sql= "SELECT stock FROM stocks where stock_productid=? ";
         $stmt = $db->prepare($sql);
-        $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
+        $stmt->execute([(int)$_POST['product_id']]);
+        $oldstock= $stmt->fetch();
+        $newstock = (int)$oldstock->stock - (int)$_POST['product_qty'];
+        $sql = "UPDATE stocks SET stock=? where stock_productid=? " ;
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$newstock,(int)$_POST['product_id']]);
+
+
+
+        $sql = 'INSERT INTO `sellfactors` SET sell_date=?,cust_id=?,product_id=?,product_qty=?,factor_fi=?,sell_off=?,sell_sum=?,factor_explanation=?,user_editfactor=?,credit_after_sell=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['sell_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id'],(int)$newstock]);
         $id = $db->lastInsertId();
         $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,sellfactor_id=?,created_at=?,edit_user=?';
         $stmt = $db->prepare($sql);
@@ -48,14 +64,14 @@ if (isset($_POST['submit'])) {
         $stmt->execute([$_POST['cust_id']]);
         $customer = $stmt->fetch();
         $cus = $customer->cust_name;
-        $sql= "SELECT stock FROM stocks where stock_productid=? ";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([(int)$_POST['product_id']]);
-        $oldstock= $stmt->fetch();
-        $newstock = (int)$oldstock->stock - (int)$_POST['product_qty'];
-        $sql = "UPDATE stocks SET stock=? where stock_productid=? " ;
-        $stmt = $db->prepare($sql);
-        $stmt->execute([(int)$newstock,(int)$_POST['product_id']]);
+        // $sql= "SELECT stock FROM stocks where stock_productid=? ";
+        // $stmt = $db->prepare($sql);
+        // $stmt->execute([(int)$_POST['product_id']]);
+        // $oldstock= $stmt->fetch();
+        // $newstock = (int)$oldstock->stock - (int)$_POST['product_qty'];
+        // $sql = "UPDATE stocks SET stock=? where stock_productid=? " ;
+        // $stmt = $db->prepare($sql);
+        // $stmt->execute([(int)$newstock,(int)$_POST['product_id']]);
     }
 
 }

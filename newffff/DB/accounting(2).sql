@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 20, 2023 at 11:30 AM
+-- Generation Time: Jun 21, 2023 at 11:43 AM
 -- Server version: 8.0.32-0ubuntu0.20.04.2
 -- PHP Version: 8.2.5
 
@@ -54,6 +54,7 @@ CREATE TABLE `buyfactor` (
   `buy_off` int DEFAULT NULL,
   `buy_sum` int NOT NULL,
   `factor_explanation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
+  `credit_prod_after` bigint UNSIGNED NOT NULL,
   `factor_done` enum('1','2') CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL DEFAULT '1',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -64,8 +65,10 @@ CREATE TABLE `buyfactor` (
 -- Dumping data for table `buyfactor`
 --
 
-INSERT INTO `buyfactor` (`buyfactor_id`, `buy_date`, `cust_id`, `product_id`, `warehouse_id`, `product_qty`, `factor_fi`, `buy_off`, `buy_sum`, `factor_explanation`, `factor_done`, `created_at`, `updated_at`, `user_editfactor`) VALUES
-(22, '1687345941', 1, 1, 1, 20, 100, 10, 1990, 'خرید خودکار', '1', '2023-06-20 11:12:45', NULL, 1);
+INSERT INTO `buyfactor` (`buyfactor_id`, `buy_date`, `cust_id`, `product_id`, `warehouse_id`, `product_qty`, `factor_fi`, `buy_off`, `buy_sum`, `factor_explanation`, `credit_prod_after`, `factor_done`, `created_at`, `updated_at`, `user_editfactor`) VALUES
+(25, '1687331118', 1, 1, 1, 100, 10, 0, 1000, '', 100, '1', '2023-06-21 07:05:30', NULL, 1),
+(26, '1687849543', 1, 1, 1, 50, 25, 0, 1250, '', 150, '1', '2023-06-21 07:06:13', NULL, 1),
+(27, '1690874545', 1, 1, 1, 70, 700, 0, 49000, '', 200, '1', '2023-06-21 07:22:40', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -111,10 +114,14 @@ CREATE TABLE `credits` (
 --
 
 INSERT INTO `credits` (`credit_id`, `personaccount_id`, `credit`, `transfer_id`, `buyfactor_id`, `sellfactor_id`, `created_at`, `updated_at`, `edit_user`) VALUES
-(1, 1, 1990, NULL, 22, NULL, '1687345941', NULL, 1),
-(2, 2, -1990, NULL, 22, NULL, '1687345941', NULL, 1),
-(3, 1, -350, NULL, NULL, 12, '1687259711', NULL, 1),
-(4, 3, 350, NULL, NULL, 12, '1687259711', NULL, 1);
+(1, 1, 1000, NULL, 25, NULL, '1687331118', NULL, 1),
+(2, 2, -1000, NULL, 25, NULL, '1687331118', NULL, 1),
+(3, 1, 1250, NULL, 26, NULL, '1687849543', NULL, 1),
+(4, 2, -1250, NULL, 26, NULL, '1687849543', NULL, 1),
+(5, 1, -400, NULL, NULL, 13, '1689146165', NULL, 1),
+(6, 3, 400, NULL, NULL, 13, '1689146165', NULL, 1),
+(7, 1, 49000, NULL, 27, NULL, '1690874545', NULL, 1),
+(8, 2, -49000, NULL, 27, NULL, '1690874545', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -137,12 +144,12 @@ CREATE TABLE `menus` (
 --
 
 INSERT INTO `menus` (`menu_id`, `menu_name`, `url`, `ordermenu`, `permition_id`, `created_at`, `updated_at`) VALUES
-(1, 'فاکتور خرید', '', 1, 1, '2023-06-19 06:36:04', NULL),
-(2, 'فاکتور خرید', '', 1, 2, '2023-06-19 06:36:04', NULL),
-(3, 'فاکتور خرید', '', 1, 3, '2023-06-19 06:36:04', NULL),
-(4, 'فاکتور فروش', '', 2, 1, '2023-06-19 06:36:31', NULL),
-(5, 'فاکتور فروش', '', 2, 2, '2023-06-19 06:36:31', NULL),
-(6, 'فاکتور فروش', '', 2, 3, '2023-06-19 06:36:31', NULL),
+(1, 'فاکتور خرید', './newffff/buyfactor.php', 1, 1, '2023-06-19 06:36:04', NULL),
+(2, 'فاکتور خرید', './newffff/buyfactor.php', 1, 2, '2023-06-19 06:36:04', NULL),
+(3, 'فاکتور خرید', './newffff/buyfactor.php', 1, 3, '2023-06-19 06:36:04', NULL),
+(4, 'فاکتور فروش', './newffff/sellfactor.php', 2, 1, '2023-06-19 06:36:31', NULL),
+(5, 'فاکتور فروش', './newffff/sellfactor.php', 2, 2, '2023-06-19 06:36:31', NULL),
+(6, 'فاکتور فروش', './newffff/sellfactor.php', 2, 3, '2023-06-19 06:36:31', NULL),
 (7, 'تعریف طرف حساب و حساب ها', '', 3, 1, '2023-06-19 06:38:08', NULL),
 (8, 'تعریف طرف حساب و حساب ها', '', 3, 2, '2023-06-19 06:38:08', NULL),
 (9, 'تعریف طرف حساب و حساب ها', '', 3, 3, '2023-06-19 06:38:08', NULL),
@@ -151,8 +158,8 @@ INSERT INTO `menus` (`menu_id`, `menu_name`, `url`, `ordermenu`, `permition_id`,
 (12, 'تعریف کالای جدید', '', 4, 3, '2023-06-19 06:38:34', NULL),
 (13, 'کاردکس اشخاص', '', 5, 1, '2023-06-19 06:39:07', NULL),
 (14, 'کاردکس اشخاص', '', 5, 2, '2023-06-19 06:39:07', NULL),
-(15, 'کاردکس کالا', '', 6, 1, '2023-06-19 06:39:26', NULL),
-(16, 'کاردکس کالا', '', 6, 2, '2023-06-19 06:39:26', NULL),
+(15, 'کاردکس کالا', './productlist.php', 6, 1, '2023-06-19 06:39:26', NULL),
+(16, 'کاردکس کالا', 'productlist.php', 6, 2, '2023-06-19 06:39:26', NULL),
 (17, 'تعریف کاربر جدید و لیست کاربران', '', 7, 1, '2023-06-19 06:39:46', NULL),
 (18, 'اصلاح فاکتورها', '', 8, 1, '2023-06-19 06:41:10', NULL),
 (19, 'ثبت حواله', '', 9, 1, '2023-06-19 06:41:10', NULL),
@@ -248,6 +255,7 @@ CREATE TABLE `sellfactors` (
   `sell_off` bigint UNSIGNED DEFAULT NULL,
   `sell_sum` bigint NOT NULL,
   `factor_explanation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_persian_ci NOT NULL,
+  `credit_after_sell` bigint UNSIGNED NOT NULL,
   `factor_done` enum('1','2') COLLATE utf8mb4_persian_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -258,8 +266,8 @@ CREATE TABLE `sellfactors` (
 -- Dumping data for table `sellfactors`
 --
 
-INSERT INTO `sellfactors` (`sellfactor_id`, `sell_date`, `cust_id`, `product_id`, `product_qty`, `factor_fi`, `sell_off`, `sell_sum`, `factor_explanation`, `factor_done`, `created_at`, `updated_at`, `user_editfactor`) VALUES
-(12, 1687259711, 1, 1, 18, 20, 10, 350, '', '1', '2023-06-20 11:15:29', NULL, 1);
+INSERT INTO `sellfactors` (`sellfactor_id`, `sell_date`, `cust_id`, `product_id`, `product_qty`, `factor_fi`, `sell_off`, `sell_sum`, `factor_explanation`, `credit_after_sell`, `factor_done`, `created_at`, `updated_at`, `user_editfactor`) VALUES
+(13, 1689146165, 1, 1, 20, 20, 0, 400, '', 130, '1', '2023-06-21 07:21:42', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -281,7 +289,7 @@ CREATE TABLE `stocks` (
 --
 
 INSERT INTO `stocks` (`stock_id`, `stock_productid`, `stock_wearhouseid`, `stock`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 2, '2023-06-20 11:12:45', NULL);
+(1, 1, 1, 200, '2023-06-21 07:05:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -493,7 +501,7 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `buyfactor`
 --
 ALTER TABLE `buyfactor`
-  MODIFY `buyfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `buyfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -505,7 +513,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `credits`
 --
 ALTER TABLE `credits`
-  MODIFY `credit_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `credit_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `menus`
@@ -535,7 +543,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `sellfactors`
 --
 ALTER TABLE `sellfactors`
-  MODIFY `sellfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `sellfactor_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `stocks`

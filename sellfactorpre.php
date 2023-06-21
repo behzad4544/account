@@ -2,6 +2,9 @@
 require "./newffff/Helper/dataBase.php"; //"./Helper/dataBase.php";
 require "./newffff/Helper/helpers.php";
 require "./newffff/Helper/jdf.php";
+if (!(isset($_SESSION['username']))) {
+    header("location:login.php");
+}
 global $db;
 if (isset($_GET['id']) && !(empty($_GET['id']))) {
     $id = $_GET['id'];
@@ -119,7 +122,7 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
                                                                         } else {
                                                                             echo "(بدهکار)";
                                                                         }
-                                                                        ?> <?= $credits->credit ?> </strong></td>
+?> <?= $credits->credit ?> </strong></td>
                                     <td colspan="4" class="text-left"><strong> : مانده <?= $factor->cust_name  ?> تا این
                                             تاریخ
                                         </strong></td>
