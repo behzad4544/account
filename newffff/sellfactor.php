@@ -212,7 +212,7 @@ if (isset($_POST['submit'])) {
         }, 1);
         window.setTimeout(function() {
             window.location.replace('../sellfactorpre.php?id={$id}');
-        }, 8000);
+        }, 5000);
         </script>
         ";
             }

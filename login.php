@@ -54,8 +54,10 @@ if (isset($_POST['submit'])) {
     <title>Login</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
     </script>
     <link rel='stylesheet' href='./newffff/CSS/sweet-alert.css'>
 
@@ -70,22 +72,26 @@ if (isset($_POST['submit'])) {
 
         <section class="bg-light my-0 px-2">
             <?php if (isset($errors)) : ?>
-                <?php foreach ($errors as $error) : ?>
-                    <small class="text-danger"><?= $error . '<br>' ?></small>
-                <?php endforeach; ?>
+            <?php foreach ($errors as $error) : ?>
+            <small class="text-danger"><?= $error . '<br>' ?></small>
+            <?php endforeach; ?>
             <?php endif; ?>
         </section>
         <form method="POST" action="login.php" class="needs-validation">
             <div class="form-group">
                 <label class="form-label" for="username"> نام کاربری </label>
-                <input class="form-control" type="text" id="username" name="username" <?php
-                                                                                        if (isset($_COOKIE['username']) && !(empty($_COOKIE['username']))) : ?> value="<?= $_COOKIE['username'] ?>" <?php endif; ?>>
+                <input class="form-control" type="text" id="username" name="username"
+                    <?php
+                                                                                        if (isset($_COOKIE['username']) && !(empty($_COOKIE['username']))) : ?>
+                    value="<?= $_COOKIE['username'] ?>" <?php endif; ?>>
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="password"> کلمه عبور </label>
-                <input class="form-control" type="password" id="password" name="password" <?php
-                                                                                            if (isset($_COOKIE['password']) && !(empty($_COOKIE['password']))) : ?> value="<?= $_COOKIE['password'] ?>" <?php endif; ?>>
+                <input class="form-control" type="password" id="password" name="password"
+                    <?php
+                                                                                            if (isset($_COOKIE['password']) && !(empty($_COOKIE['password']))) : ?>
+                    value="<?= $_COOKIE['password'] ?>" <?php endif; ?>>
             </div>
 
             <div class="form-group form-check">
@@ -107,7 +113,7 @@ if (isset($_POST['submit'])) {
             </script>
             ";
             }
-            ?>
+?>
         </form>
 
 
