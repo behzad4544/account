@@ -21,6 +21,9 @@ if (isset($_POST['submit'])) {
     date_default_timezone_set('Iran');
     $realTimestamp = substr($_POST['buy_date'], 0, 10);
     $total = ((int)$_POST['product_qty'] * (int)$_POST['factor_fi']) - (int)$_POST['buy_off'];
+
+
+
     // $sql = 'INSERT INTO `buyfactor` SET buy_date=?,cust_id=?,product_id=?,warehouse_id=?,product_qty=?,factor_fi=?,buy_off=?,buy_sum=?,factor_explanation=?,user_editfactor=?';
     // $stmt = $db->prepare($sql);
     // $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id']]);
@@ -44,6 +47,8 @@ if (isset($_POST['submit'])) {
     // $stmt->execute([$_POST['cust_id']]);
     // $supplier = $stmt->fetch();
     // $supp = $supplier->cust_name;
+
+
     $sql = "SELECT * from stocks where stock_productid=? and stock_wearhouseid=?";
     $stmt = $db->prepare($sql);
     $stmt->execute([(int)$_POST['product_id'],(int)$_POST['warehouse_id']]);
@@ -57,26 +62,94 @@ if (isset($_POST['submit'])) {
         $stmt = $db->prepare($sql);
         $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id'],$credit_prod_after]);
         $id = $db->lastInsertId();
-        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?';
+
+
+
+        $sql = "SELECT * from personaccount where cust_id =? ";
         $stmt = $db->prepare($sql);
-        $stmt->execute([(int)$_POST['cust_id'], (int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+        $stmt->execute([(int)$_POST['cust_id']]);
+        $total_credit = $stmt->fetch();
+        $total_credit_old = $total_credit->total_credit;
+        $total_credit_new = $total_credit_old + $total;
+        $sql = "UPDATE personaccount SET total_credit = $total_credit_new where cust_id =? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id']]);
+
+
+        $sql = "SELECT * From personaccount where cust_id =? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id']]);
+        $rr = $stmt->fetch();
+        $ttl1 = $rr->total_credit;
+
+
+        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?,credit_after=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id'], (int)$total, $id, $realTimestamp, $_SESSION['user_id'],$ttl1]);
         $id1 = $db->lastInsertId();
+
+
+
         $sql = 'SELECT * from personaccount where cust_name=?';
         $buy1 = 'خرید';
         $stmt = $db->prepare($sql);
         $stmt->execute([$buy1]);
         $buy2 = $stmt->fetch();
         $buy = $buy2->cust_id;
-        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?';
+        $total_buy_old = $buy2->total_credit;
+        $total_buy_new = $total_buy_old - $total;
+        $sql = "UPDATE personaccount SET total_credit = $total_buy_new where cust_id =? ";
         $stmt = $db->prepare($sql);
-        $stmt->execute([(int)$buy, -(int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+        $stmt->execute([$buy]);
+
+
+
+
+        $sql = "SELECT * From personaccount where cust_id =? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$buy]);
+        $rrr = $stmt->fetch();
+        $ttl2 = $rrr->total_credit;
+
+        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?,credit_after=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$buy, -(int)$total, $id, $realTimestamp, $_SESSION['user_id'],$ttl2]);
         $id2 = $db->lastInsertId();
+
+
+
         $sql = 'SELECT * FROM personaccount where cust_id=?';
         $stmt = $db->prepare($sql);
         $stmt->execute([$_POST['cust_id']]);
         $supplier = $stmt->fetch();
         $supp = $supplier->cust_name;
     } else {
+
+        $sql = "SELECT * from personaccount where cust_id =? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id']]);
+        $total_credit = $stmt->fetch();
+        $total_credit_old = $total_credit->total_credit;
+        $total_credit_new = $total_credit_old + $total;
+        $sql = "UPDATE personaccount SET total_credit = $total_credit_new where cust_id =? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id']]);
+
+
+
+        $sql = 'SELECT * from personaccount where cust_name=?';
+        $buy1 = 'خرید';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$buy1]);
+        $buy2 = $stmt->fetch();
+        $buy = $buy2->cust_id;
+        $total_buy_old = $buy2->total_credit;
+        $total_buy_new = $total_buy_old - $total;
+        $sql = "UPDATE personaccount SET total_credit = $total_buy_new where cust_id =? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$buy]);
+
+
 
         $sql= "SELECT stock FROM stocks where stock_productid=? ";
         $stmt = $db->prepare($sql);
@@ -91,9 +164,17 @@ if (isset($_POST['submit'])) {
         $stmt = $db->prepare($sql);
         $stmt->execute([$realTimestamp, (int)$_POST['cust_id'], (int)$_POST['product_id'], (int)$_POST['warehouse_id'], (int)$_POST['product_qty'], (int)$_POST['factor_fi'], (int)$_POST['buy_off'], (int)$total, $_POST['factor_explanation'], $_SESSION['user_id'],$credit_prod_after]);
         $id = $db->lastInsertId();
-        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?';
+
+        $sql = "SELECT * From personaccount where cust_id =? ";
         $stmt = $db->prepare($sql);
-        $stmt->execute([(int)$_POST['cust_id'], (int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+        $stmt->execute([(int)$_POST['cust_id']]);
+        $rr = $stmt->fetch();
+        $ttl1 = $rr->total_credit;
+
+        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?,credit_after=?';
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$_POST['cust_id'], (int)$total, $id, $realTimestamp, $_SESSION['user_id'],$ttl1]);
         $id1 = $db->lastInsertId();
         $sql = 'SELECT * from personaccount where cust_name=?';
         $buy1 = 'خرید';
@@ -101,9 +182,17 @@ if (isset($_POST['submit'])) {
         $stmt->execute([$buy1]);
         $buy2 = $stmt->fetch();
         $buy = $buy2->cust_id;
-        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?';
+
+        $sql = "SELECT * From personaccount where cust_id =? ";
         $stmt = $db->prepare($sql);
-        $stmt->execute([(int)$buy, -(int)$total, $id, $realTimestamp, $_SESSION['user_id']]);
+        $stmt->execute([$buy]);
+        $rrr = $stmt->fetch();
+        $ttl2 = $rrr->total_credit;
+
+        $sql = 'INSERT INTO `credits` SET personaccount_id=?,credit=?,buyfactor_id=?,created_at=?,edit_user=?,credit_after=?';
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute([(int)$buy, -(int)$total, $id, $realTimestamp, $_SESSION['user_id'],$ttl2]);
         $id2 = $db->lastInsertId();
         $sql = 'SELECT * FROM personaccount where cust_id=?';
         $stmt = $db->prepare($sql);

@@ -8,17 +8,12 @@ if (!(isset($_SESSION['username']))) {
 }
 if (isset($_GET['id']) && !(empty($_GET['id']))) {
     $id = $_GET['id'];
-    $sql = "SELECT buyfactor.buyfactor_id,buyfactor.buy_date,wearhouses.wearhouse_name,buyfactor.user_editfactor,personaccount.cust_name,personaccount.cust_id,products.product_name,buyfactor.product_qty,buyfactor.factor_fi,buyfactor.buy_off,buyfactor.buy_sum,buyfactor.factor_explanation,users.user_name FROM buyfactor,wearhouses,personaccount,products,users WHERE buyfactor.cust_id = personaccount.cust_id and buyfactor.warehouse_id = wearhouses.wearhouse_id and buyfactor.product_id=products.product_id and buyfactor.user_editfactor = users.user_id and buyfactor.buyfactor_id=?";
+    $sql = "SELECT buyfactor.buyfactor_id,buyfactor.buy_date,wearhouses.wearhouse_name,buyfactor.user_editfactor,personaccount.cust_name,personaccount.cust_id,personaccount.total_credit,products.product_name,buyfactor.product_qty,buyfactor.factor_fi,buyfactor.buy_off,buyfactor.buy_sum,buyfactor.factor_explanation,users.user_name FROM buyfactor,wearhouses,personaccount,products,users WHERE buyfactor.cust_id = personaccount.cust_id and buyfactor.warehouse_id = wearhouses.wearhouse_id and buyfactor.product_id=products.product_id and buyfactor.user_editfactor = users.user_id and buyfactor.buyfactor_id=?";
     $stmt = $db->prepare($sql);
     $stmt->execute([$id]);
     $factor = $stmt->fetch();
     if ($factor == null) {
         header("location:index.php");
-    } else {
-        $sql = "SELECT SUM(credit) as credit from credits where personaccount_id=?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$factor->cust_id]);
-        $credits = $stmt->fetch();
     }
 }
 ?>
@@ -112,12 +107,12 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
 
                                 <tr>
                                     <td class="text-center"><strong> <?php
-                                                                        if (($credits->credit) > 0) {
+                                                                        if (($factor->total_credit) > 0) {
                                                                             echo "(بستانکار)";
                                                                         } else {
                                                                             echo "(بدهکار)";
                                                                         }
-?> <?= $credits->credit ?> </strong></td>
+?> <?= $factor->total_credit ?> </strong></td>
                                     <td colspan="4" class="text-left"><strong> : مانده <?= $factor->cust_name  ?> تا این
                                             تاریخ
                                         </strong></td>
