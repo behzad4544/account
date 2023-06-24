@@ -28,7 +28,12 @@ if (isset($_POST['submit'])) {
         $stmt->execute([$bestankar]);
         $bestan= $stmt->fetch();
         $ttl_bestan_old = $bestan->total_credit;
-        $ttl_bestan_new = $ttl_bestan_old - $havale_fi;
+        if($ttl_bestan_old < 0) {
+            $ttl_bestan_new = $ttl_bestan_old + $havale_fi;
+        } else {
+            $ttl_bestan_new = $ttl_bestan_old - $havale_fi;
+
+        }
         $sql = "INSERT INTO credits SET personaccount_id=?,credit=?,transfer_id=?,credit_after=?,edit_user=?,created_at =?";
         $stmt = $db->prepare($sql);
         $stmt->execute([$bestankar,$havale_fi,$id,$ttl_bestan_new,$_SESSION['user_id'],$realTimestamp]);
@@ -41,10 +46,15 @@ if (isset($_POST['submit'])) {
         $stmt->execute([$bedehkar]);
         $bedeh= $stmt->fetch();
         $ttl_bedeh_old = $bedeh->total_credit;
-        $ttl_bedeh_new = $ttl_bedeh_old - $havale_fi;
+        if($ttl_bedeh_old < 0) {
+            $ttl_bedeh_new = $ttl_bedeh_old + $havale_fi;
+        } else {
+            $ttl_bedeh_new = $ttl_bedeh_old - $havale_fi;
+
+        }
         $sql = "INSERT INTO credits SET personaccount_id=?,credit=?,transfer_id=?,credit_after=?,edit_user=?,created_at =?";
         $stmt = $db->prepare($sql);
-        $stmt->execute([$bedehkar,$havale_fi,$id,$ttl_bedeh_new,$_SESSION['user_id'],$realTimestamp]);
+        $stmt->execute([$bedehkar,-$havale_fi,$id,$ttl_bedeh_new,$_SESSION['user_id'],$realTimestamp]);
         $id2 = $db->lastInsertId();
 
 
@@ -53,8 +63,12 @@ if (isset($_POST['submit'])) {
         $stmt->execute([$bestankar]);
         $res1 = $stmt->fetch();
         $total_bestan_old = $res1->total_credit;
-        $total_bestan_new = $total_bestan_old - $havale_fi;
-        $sql = "UPDATE personaccount SET total_credit=? WHERE cust_id=? ";
+        if($total_bestan_old < 0) {
+            $total_bestan_new = $total_bestan_old + $havale_fi;
+        } else {
+            $total_bestan_new = $total_bestan_old - $havale_fi;
+
+        }        $sql = "UPDATE personaccount SET total_credit=? WHERE cust_id=? ";
         $stmt = $db->prepare($sql);
         $stmt->execute([$total_bestan_new,$bestankar]);
 
@@ -64,10 +78,18 @@ if (isset($_POST['submit'])) {
         $stmt->execute([$bedehkar]);
         $res2 = $stmt->fetch();
         $total_bedeh_old = $res2->total_credit;
-        $total_bedeh_new = $total_bedeh_old - $havale_fi;
-        $sql = "UPDATE personaccount SET total_credit=? WHERE cust_id=? ";
+        if($total_bedeh_old < 0) {
+            $total_bedeh_new = $total_bedeh_old + $havale_fi;
+        } else {
+            $total_bedeh_new = $total_bedeh_old - $havale_fi;
+
+        }        $sql = "UPDATE personaccount SET total_credit=? WHERE cust_id=? ";
         $stmt = $db->prepare($sql);
         $stmt->execute([$total_bedeh_new,$bedehkar]);
+
+
+        $bedehkar_name = $res2->cust_name;
+        $bestankar_name = $res1->cust_name;
 
     } else {
         $errors[] = "هر دو شخص نمیتواند یکی باشد";
@@ -163,10 +185,10 @@ if (isset($_POST['submit'])) {
                 echo "
         <script>
         setTimeout(function() {
-            swal('حواله شماره {$id1} برای {$bestankar} و حواله شماره {$id2} برای {$bedehkar} ثبت شد','حواله شماره {$id} ثبت شد', 'success')
+            swal('حواله شماره {$id} ثبت شد','حواله شماره {$id1} برای {$bestankar_name} و حواله شماره {$id2} برای {$bedehkar_name} ثبت شد', 'success')
         }, 1);
         window.setTimeout(function() {
-            window.location.replace('./index.php');
+            window.location.replace('./havaleview.php?id={$id}');
         }, 5000);
         </script>
         ";
