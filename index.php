@@ -1,6 +1,6 @@
 <?php
-require "./newffff/Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
+require "./assets/Helper/helpers.php";
+require "./assets/Helper/dataBase.php";
 global $db;
 if (isset($_SESSION['permition']) && !(empty($_SESSION['permition'])) && isset($_SESSION['username']) && !(empty($_SESSION['username']))) {
     $sql = "SELECT * FROM menus where permition_id = ? order by ordermenu ";
@@ -18,7 +18,7 @@ if (isset($_SESSION['permition']) && !(empty($_SESSION['permition'])) && isset($
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
 </head>
 
 <body>

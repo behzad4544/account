@@ -1,7 +1,7 @@
 <?php
-require "./newffff/Helper/dataBase.php"; //"./Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
-require "./newffff/Helper/jdf.php";
+require "./assets/Helper/dataBase.php"; //"./Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
+require "./assets/Helper/jdf.php";
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
 }
@@ -32,8 +32,8 @@ $details = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./newffff/CSS/bootstrap.min.css">
-    <link rel="stylesheet" href="./newffff/JS/bootstrap.min.js">
+    <link rel="stylesheet" href="./assets/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/JS/bootstrap.min.js">
     <!-- icon font -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -116,7 +116,8 @@ foreach ($details as $detail) {?>
             <td style=" border: 1px solid"><a
                     href="./persondetail.php?id=<?= $detail->cust_id ?>"><?= $detail->cust_name ?></a></td>
             <td style=" border: 1px solid"><a
-                    href="./persondetail.php?id=<?= $detail->cust_id ?>"><?= abs($detail->total_credit) ?></a></td>
+                    href="./persondetail.php?id=<?= $detail->cust_id ?>"><?= number_format(abs($detail->total_credit)) ?></a>
+            </td>
             <td style=" border: 1px solid"><a href="./persondetail.php?id=<?= $detail->cust_id ?>"><?php if(($detail->total_credit)> 0) {
                 echo "بستانکار";
             } elseif (($detail->total_credit) == 0) {

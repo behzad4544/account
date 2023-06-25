@@ -1,6 +1,6 @@
 <?php
-require "./newffff/Helper/dataBase.php"; //"./Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
+require "./assets/Helper/dataBase.php"; //"./Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
 global $db;
 $errors = [];
 if (!(isset($_SESSION['username']))) {
@@ -106,22 +106,22 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>havale</title>
     <!-- swiper css link -->
-    <link rel="stylesheet" href="./newffff/CSS/swiper-bundle.min.css" />
-    <link rel='stylesheet' href='./newffff/CSS/sweet-alert.css'>
-    <link rel="stylesheet" href="./newffff/CSS/bootstrap.min.css" />
-    <link href="./newffff/Public/jalalidatepicker/persian-datepicker.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./assets/CSS/swiper-bundle.min.css" />
+    <link rel='stylesheet' href='./assets/CSS/sweet-alert.css'>
+    <link rel="stylesheet" href="./assets/CSS/bootstrap.min.css" />
+    <link href="./assets/Public/jalalidatepicker/persian-datepicker.min.css" rel="stylesheet" type="text/css">
 
 
     <!-- font awesome cdn link-->
-    <link rel="stylesheet" href="./newffff/CSS/all.min.css">
+    <link rel="stylesheet" href="./assets/CSS/all.min.css">
 
     <!-- custom css file link -->
-    <link rel="stylesheet" href="./newffff/CSS/style3.css">
+    <link rel="stylesheet" href="./assets/CSS/style3.css">
 
 </head>
 
 <body>
-    <div class="heading" style="background:url(./newffff/CSS/purchase2.png) no-repeat">
+    <div class="heading" style="background:url(./assets/CSS/purchase2.png) no-repeat">
         <h1> حواله </h1>
     </div>
     <section class="bg-light my-0 px-2">
@@ -197,11 +197,11 @@ if (isset($_POST['submit'])) {
         </form>
     </section>
 
-    <script src="./newffff/JS/jquery-3.3.1.slim.min.js"></script>
-    <script src="./newffff/JS/bootstrap.min.js"></script>
-    <script src="./newffff/Public/jalalidatepicker/persian-date.min.js"></script>
-    <script src="./newffff/Public/jalalidatepicker/persian-datepicker.min.js"></script>
-    <script src='./newffff/JS/sweet-alert.min.js'></script>
+    <script src="./assets/JS/jquery-3.3.1.slim.min.js"></script>
+    <script src="./assets/JS/bootstrap.min.js"></script>
+    <script src="./assets/Public/jalalidatepicker/persian-date.min.js"></script>
+    <script src="./assets/Public/jalalidatepicker/persian-datepicker.min.js"></script>
+    <script src='./assets/JS/sweet-alert.min.js'></script>
     <script>
     $(document).ready(function() {
         $("#havale_view").persianDatepicker({

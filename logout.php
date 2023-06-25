@@ -1,6 +1,6 @@
 <?php
-require "./newffff/Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
+require "./assets/Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
 if (isset($_SESSION['username'])) {
     session_destroy();
 }

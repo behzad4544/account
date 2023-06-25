@@ -1,7 +1,7 @@
 <?php
-require "./newffff/Helper/dataBase.php"; //"./Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
-require "./newffff/Helper/jdf.php";
+require "./assets/Helper/dataBase.php"; //"./Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
+require "./assets/Helper/jdf.php";
 global $db;
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
@@ -25,9 +25,9 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./newffff/CSS/style.css">
-    <link rel="stylesheet" href="./newffff/CSS/bootstrap.min.css">
-    <link rel="stylesheet" href="./newffff/JS/bootstrap.min.js">
+    <link rel="stylesheet" href="./assets/CSS/style.css">
+    <link rel="stylesheet" href="./assets/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/JS/bootstrap.min.js">
     <!-- icon font -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -38,7 +38,7 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
         <header>
             <div class="row align-items-center">
                 <div class="col-sm-7">
-                    <img id="logo" src="./newffff/CSS/LOGO.jpg" alt="">
+                    <img id="logo" src="./assets/CSS/LOGO.jpg" alt="">
                 </div>
                 <div class="col-sm-5 text-right">
                     <h4 class="mb-0 text-right"> فاکتور خرید </h4>
@@ -84,9 +84,11 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
                             <tbody>
                                 <tr>
                                     <td class="col-3 text-center">
-                                        <strong><?= ($factor->factor_fi * $factor->product_qty)  ?></strong>
+                                        <strong><?= number_format(($factor->factor_fi * $factor->product_qty))  ?></strong>
                                     </td>
-                                    <td class="col-3 text-center"><strong><?= $factor->factor_fi  ?></strong></td>
+                                    <td class="col-3 text-center">
+                                        <strong><?= number_format($factor->factor_fi)  ?></strong>
+                                    </td>
                                     <td class="col-3 text-center"><strong><?= $factor->product_qty  ?></strong></td>
                                     <td class="col-3 text-center"><strong><?= $factor->product_name  ?></strong></td>
                                     <td class="col-3 text-center"><strong>1</strong></td>
@@ -95,12 +97,13 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
                             </tbody>
                             <tfoot class="card-footer">
                                 <tr>
-                                    <td class="text-center"><strong><?= $factor->buy_off ?></strong></td>
+                                    <td class="text-center"><strong><?= number_format($factor->buy_off) ?></strong></td>
                                     <td colspan="4" class="text-left"><strong> :مبلغ تخفیف </strong></td>
                                 </tr>
 
                                 <tr>
-                                    <td class="text-center"><strong> <?= $factor->buy_sum   ?> </strong></td>
+                                    <td class="text-center"><strong> <?= number_format($factor->buy_sum)   ?> </strong>
+                                    </td>
                                     <td colspan="4" class="text-left"><strong> : مبلغ کل فاکتور </strong></td>
 
                                 </tr>
@@ -112,7 +115,7 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
                                                                         } else {
                                                                             echo "(بدهکار)";
                                                                         }
-?> <?= $factor->total_credit ?> </strong></td>
+?> <?= number_format(abs($factor->total_credit)) ?> </strong></td>
                                     <td colspan="4" class="text-left"><strong> : مانده <?= $factor->cust_name  ?> تا این
                                             تاریخ
                                         </strong></td>

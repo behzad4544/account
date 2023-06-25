@@ -1,7 +1,7 @@
 <?php
-require "./newffff/Helper/dataBase.php"; //"./Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
-require "./newffff/Helper/jdf.php";
+require "./assets/Helper/dataBase.php"; //"./Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
+require "./assets/Helper/jdf.php";
 global $i;
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
@@ -39,6 +39,8 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
         $stmt = $db->prepare($sql);
         $stmt->execute([$id]);
         $transfers_to = $stmt->fetchAll();
+
+
     }
 }
 ?>
@@ -50,8 +52,8 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./newffff/CSS/bootstrap.min.css">
-    <link rel="stylesheet" href="./newffff/JS/bootstrap.min.js">
+    <link rel="stylesheet" href="./assets/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/JS/bootstrap.min.js">
     <!-- icon font -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
@@ -77,12 +79,12 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
 foreach ($buys as $buy) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $buy->buy_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d ", $buy->buy_date) ?> </td>
             <td style=" border: 1px solid"><a href="./buyfactorpre.php?id=<?= $buy->buyfactor_id ?>">فاکتور خرید شماره
                     <?= $buy->buyfactor_id ?></a></td>
-            <td style=" border: 1px solid"><?= abs($buy->buy_sum) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($buy->buy_sum)) ?></td>
             <td style=" border: 1px solid">0</td>
-            <td style=" border: 1px solid"><?= abs($buy->credit_after) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($buy->credit_after)) ?></td>
             <td style=" border: 1px solid"><?php if(($buy->credit_after) > 0) {
                 echo "بستانکار";
             } elseif (($buy->credit_after) == 0) {
@@ -99,12 +101,12 @@ foreach ($buys as $buy) {?>
 foreach ($sells as $sell) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $sell->sell_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d ", $sell->sell_date) ?> </td>
             <td style=" border: 1px solid"><a href="./sellfactorpre.php?id=<?= $sell->sellfactor_id ?>">فاکتور فروش
                     شماره <?= $sell->sellfactor_id ?></a></td>
             <td style=" border: 1px solid">0</td>
-            <td style=" border: 1px solid"><?= abs($sell->sell_sum) ?></td>
-            <td style=" border: 1px solid"><?= abs($sell->credit_after) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($sell->sell_sum)) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($sell->credit_after)) ?></td>
             <td style=" border: 1px solid"><?php if(($sell->credit_after) > 0) {
                 echo "بستانکار";
             } elseif (($sell->credit_after) == 0) {
@@ -119,12 +121,12 @@ foreach ($sells as $sell) {?>
 foreach ($transfers_from as $transfer_from) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $transfer_from->transfersend_date) ?> </td>
-            <td style=" border: 1px solid"><a href="#"> حواله
+            <td style=" border: 1px solid"><?= jdate("Y/m/d ", $transfer_from->transfersend_date) ?> </td>
+            <td style=" border: 1px solid"><a href="./havaleview.php?id=<?= $transfer_from->transfersend_id ?>"> حواله
                     شماره <?= $transfer_from->transfersend_id ?></a></td>
-            <td style=" border: 1px solid"><?= abs($transfer_from->transfersend_price) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($transfer_from->transfersend_price)) ?></td>
             <td style=" border: 1px solid">0</td>
-            <td style=" border: 1px solid"><?= abs($transfer_from->credit_after) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($transfer_from->credit_after)) ?></td>
             <td style=" border: 1px solid"><?php if(($transfer_from->credit_after) > 0) {
                 echo "بستانکار";
             } elseif (($transfer_from->credit_after) == 0) {
@@ -139,12 +141,12 @@ foreach ($transfers_from as $transfer_from) {?>
 foreach ($transfers_to as $transfer_to) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $transfer_to->transfersend_date) ?> </td>
-            <td style=" border: 1px solid"><a href="#"> حواله
+            <td style=" border: 1px solid"><?= jdate("Y/m/d ", $transfer_to->transfersend_date) ?> </td>
+            <td style=" border: 1px solid"><a href="./havaleview.php?id=<?= $transfer_to->transfersend_id ?>"> حواله
                     شماره <?= $transfer_to->transfersend_id ?></a></td>
             <td style=" border: 1px solid">0</td>
-            <td style=" border: 1px solid"><?= abs($transfer_to->transfersend_price) ?></td>
-            <td style=" border: 1px solid"><?= abs($transfer_to->credit_after) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($transfer_to->transfersend_price)) ?></td>
+            <td style=" border: 1px solid"><?= number_format(abs($transfer_to->credit_after)) ?></td>
             <td style=" border: 1px solid"><?php if(($transfer_to->credit_after) > 0) {
                 echo "بستانکار";
             } elseif (($transfer_to->credit_after) == 0) {
@@ -157,7 +159,7 @@ foreach ($transfers_to as $transfer_to) {?>
 } ?>
     </table>
     <p>
-        مانده کل <?= $person->cust_name ?> : <?= abs($person->total_credit) ?>
+        مانده کل <?= $person->cust_name ?> : <?= number_format(abs($person->total_credit)) ?>
         <?php if(($person->total_credit) > 0) {
             echo "بستانکار";
         } elseif (($person->total_credit) == 0) {

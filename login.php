@@ -1,6 +1,6 @@
 <?php
-require "./newffff/Helper/dataBase.php";
-require "./newffff/Helper/helpers.php";
+require "./assets/Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
 global $db;
 $token = false;
 if (isset($_SESSION['username'])) {
@@ -59,10 +59,10 @@ if (isset($_POST['submit'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
     </script>
-    <link rel='stylesheet' href='./newffff/CSS/sweet-alert.css'>
+    <link rel='stylesheet' href='./assets/CSS/sweet-alert.css'>
 
     <!-- CSS File -->
-    <link rel="stylesheet" href="./newffff/CSS/style.css">
+    <link rel="stylesheet" href="./assets/CSS/style.css">
 
 </head>
 
@@ -118,7 +118,7 @@ if (isset($_POST['submit'])) {
 
 
     </div>
-    <script src='./newffff/JS/sweet-alert.min.js'></script>
+    <script src='./assets/JS/sweet-alert.min.js'></script>
 
 </body>
 

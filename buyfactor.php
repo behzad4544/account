@@ -1,9 +1,9 @@
 <?php
-require "./Helper/dataBase.php"; //"./Helper/dataBase.php";
-require "./Helper/helpers.php";
+require "./assets/Helper/dataBase.php"; //"./Helper/dataBase.php";
+require "./assets/Helper/helpers.php";
 global $db;
 if (!(isset($_SESSION['username']))) {
-    header("location:../login.php");
+    header("location:./login.php");
 }
 $sql = "SELECT * FROM personaccount where account_type=?";
 $stmt = $db->prepare($sql);
@@ -213,22 +213,22 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buy Factor</title>
     <!-- swiper css link -->
-    <link rel="stylesheet" href="./CSS/swiper-bundle.min.css" />
-    <link rel='stylesheet' href='./CSS/sweet-alert.css'>
-    <link rel="stylesheet" href="./CSS/bootstrap.min.css" />
-    <link href="Public/jalalidatepicker/persian-datepicker.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./assets/CSS/swiper-bundle.min.css" />
+    <link rel='stylesheet' href='./assets/CSS/sweet-alert.css'>
+    <link rel="stylesheet" href="./assets/CSS/bootstrap.min.css" />
+    <link href="./assets/Public/jalalidatepicker/persian-datepicker.min.css" rel="stylesheet" type="text/css">
 
 
     <!-- font awesome cdn link-->
-    <link rel="stylesheet" href="./CSS/all.min.css">
+    <link rel="stylesheet" href="./assets/CSS/all.min.css">
 
     <!-- custom css file link -->
-    <link rel="stylesheet" href="./CSS/style3.css">
+    <link rel="stylesheet" href="./assets/CSS/style3.css">
 
 </head>
 
 <body>
-    <div class="heading" style="background:url(./CSS/purchase2.png) no-repeat">
+    <div class="heading" style="background:url(./assets/CSS/purchase2.png) no-repeat">
         <h1> فاکتور خرید </h1>
     </div>
 
@@ -313,7 +313,7 @@ if (isset($_POST['submit'])) {
             swal('فاکتور خرید شماره {$id} ثبت شد ', 'حواله شماره {$id1} برای طرف حساب {$supp} و همچنین حواله شماره {$id2} برای حساب خرید ثبت شد', 'success')
         }, 1);
         window.setTimeout(function() {
-            window.location.replace('../buyfactorpre.php?id={$id}');
+            window.location.replace('./buyfactorpre.php?id={$id}');
         }, 5000);
         </script>
         ";
@@ -322,11 +322,11 @@ if (isset($_POST['submit'])) {
         </form>
     </section>
 
-    <script src="./JS/jquery-3.3.1.slim.min.js"></script>
-    <script src="./JS/bootstrap.min.js"></script>
-    <script src="./Public/jalalidatepicker/persian-date.min.js"></script>
-    <script src="./Public/jalalidatepicker/persian-datepicker.min.js"></script>
-    <script src='./JS/sweet-alert.min.js'></script>
+    <script src="./assets/JS/jquery-3.3.1.slim.min.js"></script>
+    <script src="./assets/JS/bootstrap.min.js"></script>
+    <script src="./assets/Public/jalalidatepicker/persian-date.min.js"></script>
+    <script src="./assets/Public/jalalidatepicker/persian-datepicker.min.js"></script>
+    <script src='./assets/JS/sweet-alert.min.js'></script>
     <script>
     $(document).ready(function() {
         $("#date_view").persianDatepicker({
