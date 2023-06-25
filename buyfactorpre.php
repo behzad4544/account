@@ -6,7 +6,7 @@ global $db;
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
 }
-if (isset($_GET['id']) && !(empty($_GET['id']))) {
+if (isset($_GET['id']) && !(empty($_GET['id']) && !($_GET['id'] == ""))) {
     $id = $_GET['id'];
     $sql = "SELECT buyfactor.buyfactor_id,buyfactor.buy_date,wearhouses.wearhouse_name,buyfactor.user_editfactor,personaccount.cust_name,personaccount.cust_id,personaccount.total_credit,products.product_name,buyfactor.product_qty,buyfactor.factor_fi,buyfactor.buy_off,buyfactor.buy_sum,buyfactor.factor_explanation,users.user_name FROM buyfactor,wearhouses,personaccount,products,users WHERE buyfactor.cust_id = personaccount.cust_id and buyfactor.warehouse_id = wearhouses.wearhouse_id and buyfactor.product_id=products.product_id and buyfactor.user_editfactor = users.user_id and buyfactor.buyfactor_id=?";
     $stmt = $db->prepare($sql);
@@ -15,6 +15,9 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
     if ($factor == null) {
         header("location:index.php");
     }
+} else {
+    header("location:index.php");
+
 }
 ?>
 

@@ -6,7 +6,7 @@ global $db;
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
 } else {
-    if (isset($_GET['id']) && !(empty($_GET['id']))) {
+    if (isset($_GET['id']) && !(empty($_GET['id']))&& !($_GET['id'] == "")) {
         $id = $_GET['id'];
         $sql = "SELECT * from transfer WHERE transfersend_id =?";
         $stmt = $db->prepare($sql);
@@ -25,6 +25,8 @@ if (!(isset($_SESSION['username']))) {
             $stmt->execute([$id]);
             $bedehkar = $stmt->fetch();
         }
+    } else {
+        header("location:index.php");
     }
 }
 ?>

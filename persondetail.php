@@ -6,7 +6,7 @@ global $i;
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
 }
-if (isset($_GET['id']) && !(empty($_GET['id']))) {
+if (isset($_GET['id']) && !(empty($_GET['id'])) && !($_GET['id'] == "")) {
     $id = $_GET['id'];
     $sql = "SELECT * from personaccount WHERE cust_id =?";
     $stmt = $db->prepare($sql);
@@ -42,6 +42,9 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
 
 
     }
+} else {
+    header("location:personlist.php");
+
 }
 ?>
 

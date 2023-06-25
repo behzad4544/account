@@ -6,7 +6,7 @@ if (!(isset($_SESSION['username']))) {
     header("location:login.php");
 }
 global $db;
-if (isset($_GET['id']) && !(empty($_GET['id']))) {
+if (isset($_GET['id']) && !(empty($_GET['id'])) && !($_GET['id'] == "")) {
     $id = $_GET['id'];
     $sql = "SELECT sellfactors.sellfactor_id,sellfactors.product_id,sellfactors.sell_date,sellfactors.user_editfactor,personaccount.cust_name,personaccount.total_credit,personaccount.cust_id,products.product_name,sellfactors.product_qty,sellfactors.factor_fi,sellfactors.sell_off,sellfactors.sell_sum,sellfactors.factor_explanation,users.user_name FROM sellfactors,wearhouses,personaccount,products,users WHERE sellfactors.cust_id = personaccount.cust_id and sellfactors.product_id=products.product_id and sellfactors.user_editfactor = users.user_id and sellfactors.sellfactor_id=?";
     $stmt = $db->prepare($sql);
@@ -21,6 +21,8 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
         $warehouse = $stmt->fetch();
         $anbar = $warehouse->wearhouse_name;
     }
+} else {
+    header("location:index.php");
 }
 ?>
 

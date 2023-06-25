@@ -6,7 +6,7 @@ global $i;
 if (!(isset($_SESSION['username']))) {
     header("location:login.php");
 }
-if (isset($_GET['id']) && !(empty($_GET['id']))) {
+if (isset($_GET['id']) && !(empty($_GET['id'])) && !($_GET['id'] == "")) {
     $id = $_GET['id'];
     $sql = "SELECT * from products WHERE product_id =?";
     $stmt = $db->prepare($sql);
@@ -25,6 +25,9 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
         $stmt->execute([$id]);
         $sells = $stmt->fetchAll();
     }
+} else {
+    header("location:productlist.php");
+
 }
 ?>
 
