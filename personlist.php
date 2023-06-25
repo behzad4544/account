@@ -111,14 +111,12 @@ foreach ($banks as $bank) {?>
         <?php $i = 1;
 foreach ($details as $detail) {?>
         <tr>
-            <td style=" border: 1px solid"><a href="./persondetail.php?id=<?= $detail->cust_id ?>"><?= $i ?></a>
+            <td style=" border: 1px solid"><a><?= $i ?></a>
             </td>
-            <td style=" border: 1px solid"><a
-                    href="./persondetail.php?id=<?= $detail->cust_id ?>"><?= $detail->cust_name ?></a></td>
-            <td style=" border: 1px solid"><a
-                    href="./persondetail.php?id=<?= $detail->cust_id ?>"><?= number_format(abs($detail->total_credit)) ?></a>
+            <td style=" border: 1px solid"><a><?= $detail->cust_name ?></a></td>
+            <td style=" border: 1px solid"><a><?= number_format(abs($detail->total_credit)) ?></a>
             </td>
-            <td style=" border: 1px solid"><a href="./persondetail.php?id=<?= $detail->cust_id ?>"><?php if(($detail->total_credit)> 0) {
+            <td style=" border: 1px solid"><a><?php if(($detail->total_credit)> 0) {
                 echo "بستانکار";
             } elseif (($detail->total_credit) == 0) {
                 echo "-";
