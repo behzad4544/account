@@ -59,7 +59,7 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
 foreach ($buys as $buy) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d", $buy->buy_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $buy->buy_date) ?> </td>
             <td style=" border: 1px solid"><a href="./buyfactorpre.php?id=<?= $buy->buyfactor_id ?>">فاکتور خرید شماره
                     <?= $buy->buyfactor_id ?></a></td>
             <td style=" border: 1px solid"><?= $buy->product_qty ?></td>
@@ -72,7 +72,7 @@ foreach ($buys as $buy) {?>
 foreach ($sells as $sell) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d", $sell->sell_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $sell->sell_date) ?> </td>
             <td style=" border: 1px solid"><a href="./sellfactorpre.php?id=<?= $sell->sellfactor_id ?>">فاکتور فروش
                     شماره <?= $sell->sellfactor_id ?></a></td>
             <td style=" border: 1px solid">0</td>

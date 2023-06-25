@@ -77,7 +77,7 @@ if (isset($_GET['id']) && !(empty($_GET['id']))) {
 foreach ($buys as $buy) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d", $buy->buy_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $buy->buy_date) ?> </td>
             <td style=" border: 1px solid"><a href="./buyfactorpre.php?id=<?= $buy->buyfactor_id ?>">فاکتور خرید شماره
                     <?= $buy->buyfactor_id ?></a></td>
             <td style=" border: 1px solid"><?= abs($buy->buy_sum) ?></td>
@@ -99,7 +99,7 @@ foreach ($buys as $buy) {?>
 foreach ($sells as $sell) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d", $sell->sell_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $sell->sell_date) ?> </td>
             <td style=" border: 1px solid"><a href="./sellfactorpre.php?id=<?= $sell->sellfactor_id ?>">فاکتور فروش
                     شماره <?= $sell->sellfactor_id ?></a></td>
             <td style=" border: 1px solid">0</td>
@@ -119,7 +119,7 @@ foreach ($sells as $sell) {?>
 foreach ($transfers_from as $transfer_from) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d", $transfer_from->transfersend_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $transfer_from->transfersend_date) ?> </td>
             <td style=" border: 1px solid"><a href="#"> حواله
                     شماره <?= $transfer_from->transfersend_id ?></a></td>
             <td style=" border: 1px solid"><?= abs($transfer_from->transfersend_price) ?></td>
@@ -139,7 +139,7 @@ foreach ($transfers_from as $transfer_from) {?>
 foreach ($transfers_to as $transfer_to) {?>
         <tr>
             <td style=" border: 1px solid"><?= $i ?></td>
-            <td style=" border: 1px solid"><?= jdate("Y/m/d", $transfer_to->transfersend_date) ?> </td>
+            <td style=" border: 1px solid"><?= jdate("Y/m/d h:i:s", $transfer_to->transfersend_date) ?> </td>
             <td style=" border: 1px solid"><a href="#"> حواله
                     شماره <?= $transfer_to->transfersend_id ?></a></td>
             <td style=" border: 1px solid">0</td>
